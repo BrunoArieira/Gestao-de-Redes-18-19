@@ -1,0 +1,255 @@
+CONTAINERSHIPv2-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+    MODULE-IDENTITY, OBJECT-TYPE, Integer32, experimental       FROM SNMPv2-SMI
+    TEXTUAL-CONVENTION	    		 		        			FROM SNMPv2-TC
+    OBJECT-GROUP                                                FROM SNMPv2-CONF
+
+;
+
+
+-- MODLUE IDENTITY: containership
+-- REVISION e LAST-UPDATED sao datas no formato AAAAMMDDHHMM
+-- Tem de haver um REVISION i
+
+containership MODULE-IDENTITY
+        LAST-UPDATED "201901301530Z"
+        ORGANIZATION "www.di.uminho.pt"
+        CONTACT-INFO
+                "postal:   Departamento de Informatica
+                Campus de Gualtar
+                4710-057 BRAGA
+                Portugal
+      email:    gestao-redes@di.uminho.pt"
+    DESCRIPTION
+        "MIB OBJECTS FOR CONTAINERSHIP"
+    REVISION "201901301530Z"
+    DESCRIPTION
+        "Primeira versao"
+    ::= { experimental 2019 }
+
+--
+-- top level structure
+--
+containershipParam                              OBJECT IDENTIFIER ::= { containership 1 }
+containershipImageTable                         OBJECT IDENTIFIER ::= { containership 2 }
+containershipContainerTable                     OBJECT IDENTIFIER ::= { containership 3 }
+containershipStatus                             OBJECT IDENTIFIER ::= { containership 4 }
+containershipGroups                             OBJECT IDENTIFIER ::= { containership 5 }
+--
+-- Textual convention flag
+--
+CreateFlag ::= TEXTUAL-CONVENTION
+    STATUS      current
+    DESCRIPTION
+        "Representa se e para criar ou nao"
+    SYNTAX INTEGER  { noCreate(0),  create(1) }
+
+--
+-- Groups
+--
+
+containershipParamGroup OBJECT-GROUP
+    OBJECTS { contImageIndex,
+              contName,
+              contCreateFlag }
+    STATUS  current
+    DESCRIPTION
+            "Parametros da containership"
+    ::= { containershipGroups 1 }
+
+containershipImageTableGroup OBJECT-GROUP
+    OBJECTS { imageId,
+              imageName,
+              imageVers }
+    STATUS  current
+    DESCRIPTION
+            "Imagens da containership"
+    ::= { containershipGroups 2 }
+
+containershipContTableGroup OBJECT-GROUP
+    OBJECTS { containerId,
+              containerName,
+              containerImgId,
+              containerStatus,
+              containerProcUse }
+    STATUS  current
+    DESCRIPTION
+            "Parametros da containership"
+    ::= { containershipGroups 3 }
+
+containershipStatusGroup OBJECT-GROUP
+    OBJECTS { containershipUpTime }
+    STATUS  current
+    DESCRIPTION
+            "Parametros da containership"
+    ::= { containershipGroups 4 }
+
+
+
+--
+-- containershipParam : contImageIndex, contImageName, contCreationFlag
+--
+
+contImageIndex OBJECT-TYPE
+    SYNTAX      Integer32 (1..1000)
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+                "Identificador da imagem a utilizar pelo container"
+    ::= { containershipParam 1 }
+
+contName OBJECT-TYPE
+        SYNTAX          OctetString
+        MAX-ACCESS      read-write
+        STATUS          current
+        DESCRIPTION
+                "Nome do container"
+        ::= { containershipParam 2 }
+
+contCreateFlag OBJECT-TYPE
+        SYNTAX          CreateFlag
+        MAX-ACCESS      read-write
+        STATUS          current
+        DESCRIPTION
+                " Flag a indicar que o container com essa imagem devera ser criado"
+        ::= { containershipParam 3 }
+
+--
+-- containershipImageTable 
+--
+
+contImageTable OBJECT-TYPE
+        SYNTAX          SEQUENCE OF CONTImageTableEntry
+        MAX-ACCESS      not-accessible
+        STATUS          current
+        DESCRIPTION
+                "Tabela que contem as imagens disponiveis a ser utilizaveis por um container"
+        ::= { containershipImageTable 1 }
+
+
+
+contImageTableEntry OBJECT-TYPE
+        SYNTAX          CONTImageTableEntry
+        MAX-ACCESS      not-accessible
+        STATUS          current
+        DESCRIPTION
+                "Uma linha da tabela de imagens. Inclui indice, nome da imagem, versao"
+	    INDEX { imageId }
+        ::= { contImageTable 1 }
+
+CONTImageTableEntry ::= SEQUENCE {
+        imageId         Integer32,
+        imageName       OctetString,
+        imageVers       OctetString
+}
+
+
+imageId OBJECT-TYPE
+        SYNTAX          Integer32 (1..1000)
+        MAX-ACCESS      read-write
+        STATUS          current
+        DESCRIPTION
+                "Identicador da imagem"
+        ::= { contImageTableEntry 1 }
+
+
+imageName OBJECT-TYPE
+        SYNTAX          OctetString
+        MAX-ACCESS      read-write
+        STATUS          current
+        DESCRIPTION
+                "Nome da imagem"
+        ::= { contImageTableEntry 2 }
+        
+
+imageVers OBJECT-TYPE
+        SYNTAX          OctetString
+        MAX-ACCESS      read-write
+        STATUS          current
+        DESCRIPTION
+                "Versao da imagem (latest, 8.1, etc.)"
+        ::= { contImageTableEntry 3 }
+        
+--
+-- containershipContainerTable
+--
+
+containerTable OBJECT-TYPE
+        SYNTAX          SEQUENCE OF ContainerTableEntry
+        MAX-ACCESS      not-accessible
+        STATUS          current
+        DESCRIPTION
+                "Tabela com os containers atuais"
+        ::= { containershipContainerTable 1 }
+
+containerTableEntry OBJECT-TYPE
+        SYNTAX          ContainerTableEntry
+        MAX-ACCESS      not-accessible
+        STATUS          current
+        DESCRIPTION 
+                "Una linha da tabela de containers que contem indice, nome, imagem, status e utilizacao do processador"
+	INDEX { containerId }
+        ::= { containerTable 1 }
+
+ContainerTableEntry ::= SEQUENCE {
+        containerId             Integer32,
+        containerName           OctetString,
+        containerImgId          Integer32,
+        containerStatus         OctetString,
+        containerProcUse        Integer32
+}
+
+containerId OBJECT-TYPE
+        SYNTAX          Integer32 (1..1000)
+        MAX-ACCESS      read-only
+        STATUS          current
+        DESCRIPTION
+                "Identificador do container"
+        ::= { containerTableEntry 1 }
+
+containerName OBJECT-TYPE
+        SYNTAX          OctetString
+        MAX-ACCESS      read-only
+        STATUS          current
+        DESCRIPTION
+                "Nome do container"
+        ::= { containerTableEntry 2 }
+
+containerImgId OBJECT-TYPE
+        SYNTAX          Integer32
+        MAX-ACCESS      read-only
+        STATUS          current
+        DESCRIPTION
+                "Identificador da imagem utilizada pelo container a que corresponde a entrada da tabela"
+        ::= { containerTableEntry 3 }
+
+containerStatus OBJECT-TYPE
+        SYNTAX          OctetString
+        MAX-ACCESS      read-write
+        STATUS          current
+        DESCRIPTION
+                "Estado do container ou up, down, removing, creating e changing"
+        ::= { containerTableEntry 4 }
+
+containerProcUse OBJECT-TYPE
+        SYNTAX          Integer32 (0..100)
+        MAX-ACCESS      read-only
+        STATUS          current
+        DESCRIPTION
+                "Percentagem de utilizacao do CPU pelo container"
+        ::= { containerTableEntry 5 }
+
+--
+-- containershipStatus 
+--
+
+containershipUpTime OBJECT-TYPE
+        SYNTAX          OctetString
+        MAX-ACCESS      read-only
+        STATUS          current
+        DESCRIPTION
+                "A data a que agente foi inicializado"
+        ::={ containershipStatus 1 }
+
+END

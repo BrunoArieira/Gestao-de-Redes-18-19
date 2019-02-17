@@ -1,0 +1,28 @@
+<html>
+	<head>		<meta charset="utf-8">	</head>	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">	<title>GR - Grupo 3</title>	<body>
+		<div class = "w3-container">			<h3>Resultados</h3>
+			<hr>			<table class = "w3-table-all w3-centered w3-hoverable">				<tr><th>Descrição da Interface</th><th>InOctets</th><th>OutOctets</th><th>Diferença</th></tr>				<tr>					<td></td>					<td>567276.0</td>					<td>567276.0</td>					<td>0.0</td>				</tr>				<tr>					<td></td>					<td>570774.0</td>					<td>570774.0</td>					<td>0.0</td>				</tr>				<tr>					<td></td>					<td>574897.0</td>					<td>574897.0</td>					<td>0.0</td>				</tr>				<tr>					<td></td>					<td>579910.0</td>					<td>579910.0</td>					<td>0.0</td>				</tr>				<tr>					<td>00:0c:29:b1:1a:a0</td>					<td>2.6762295E7</td>					<td>847277.0</td>					<td>2.5915018E7</td>				</tr>				<tr>					<td>00:0c:29:b1:1a:a0</td>					<td>2.6762295E7</td>					<td>847277.0</td>					<td>2.5915018E7</td>				</tr>				<tr>					<td>00:0c:29:b1:1a:a0</td>					<td>2.6762381E7</td>					<td>847277.0</td>					<td>2.5915104E7</td>				</tr>				<tr>					<td>00:0c:29:b1:1a:a0</td>					<td>2.6762501E7</td>					<td>847277.0</td>					<td>2.5915224E7</td>				</tr>				<tr>					<td>00:0c:29:b1:1a:a0</td>					<td>2.6762621E7</td>					<td>847277.0</td>					<td>2.5915344E7</td>				</tr>			</table>		</div>		<br><br><br>		<div class = "w3-container">
+			<h3>Gráfico de Desenvolvimento</h3>
+			<div id="chartContainer" style="height: 300px; width: 100%;">			<hr>		</div><script type="text/javascript">
+			  window.onload = function () {
+			    var chart = new CanvasJS.Chart("chartContainer",
+			    {
+
+			      title:{
+			      text: "Monitorização (Comparação)"
+			      },
+			      data: [
+			      {
+			        type: "line",
+
+			        dataPoints: [
+{x:1, y:2.5915018E7 },{x:2, y:2.5915018E7 },{x:3, y:2.5915104E7 },{x:4, y:2.5915224E7 },{x:5, y:2.5915344E7 },			        ]
+			      }
+			      ]
+			    });
+
+			    chart.render();
+			  }
+  		</script>
+ 		<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>	</body>
+</html>
